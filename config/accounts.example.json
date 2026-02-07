@@ -1,0 +1,15 @@
+{
+  "accounts": [
+    {
+      "account_id": "opinion_acc",
+      "exchange": "Opinion",
+      "api_key": "OPINION_API_KEY",
+      "secret_key": "OPINION_SECRET",
+      "private_key": "0xYOUR_SIGNER_PRIVATE_KEY",
+      "multi_sig_address": "0xYOUR_SAFE_OR_WALLET",
+      "rpc_url": "https://bsc-dataseed.binance.org",
+      "chain_id": 56,
+      "host": "https://proxy.opinion.trade:8443"
+    }
+  ]
+}

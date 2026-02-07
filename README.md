@@ -184,6 +184,10 @@ trade:
 ```
 
 > 说明：该文件用于 Opinion 侧下单与签名。请确保私钥与 API Key 不被提交到仓库。
+> 生成方式：
+```bash
+cp config/accounts.example.json config/accounts.json
+```
 
 ## 最小化实盘配置示例
 在 `config.yaml` 中至少配置这些字段（其它保持默认）：
