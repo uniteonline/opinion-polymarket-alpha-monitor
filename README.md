@@ -129,6 +129,81 @@ python3 analysis/alpha_follow_report.py --db "$MONITOR_DB_URL"
 
 这些报告主要依赖 `poly_shock_events`、`opinion_response`、`bars_1s_pair` 等表，可用于评估 shock→Opinion 跟随质量与 Alpha 有效性。
 
+## 从监测切换到交易（务必确认）
+当前配置默认使用 **`alpha_source: follow_score_raw`** 作为交易信号来源（可在 `config.yaml` 的 `trade.alpha_source` 修改为 `follow_score_adj` / `book_alpha_raw` / `book_alpha_adj`）。
+
+**切换步骤：**
+1. 先完成一段时间的监测与评估（见上面的 SQL/Python 报告），确认 Alpha 稳定有效。  
+2. 修改 `config.yaml`：  
+```
+trade:
+  enabled: true
+  dry_run: false
+  alpha_source: follow_score_raw   # 或你验证过的其他来源
+```
+3. 配置交易账户与权限：  
+```
+trade:
+  opinion_account_file: ./config/accounts.json
+  opinion_account_id: <your_account_id>
+  opinion_enable_trading_on_startup: true
+```
+4. 配置风控阈值（至少确认）：  
+```
+trade:
+  min_order_notional_usd: 5.0
+  max_open_positions: 60
+  max_global_exposure_frac: 0.6
+  max_per_pair_exposure_frac: 0.25
+  gas_emergency_pause_enabled: true
+```
+5. 启动服务，确认日志出现：  
+   - `trade_engine starting enabled=true ...`  
+   - `ENTRY_SIGNAL / ENTRY_READY`（alpha 日志中）  
+
+**建议**：首次切到实盘前，先跑一段时间 `dry_run: true`，观察 alpha 日志与交易信号质量。
+
+## 账户配置模板（Opinion）
+建议将账户文件放在 `./config/accounts.json`，示例：
+```json
+{
+  "accounts": [
+    {
+      "account_id": "opinion_acc",
+      "exchange": "Opinion",
+      "api_key": "OPINION_API_KEY",
+      "secret_key": "OPINION_SECRET",
+      "private_key": "0xYOUR_SIGNER_PRIVATE_KEY",
+      "multi_sig_address": "0xYOUR_SAFE_OR_WALLET",
+      "rpc_url": "https://bsc-dataseed.binance.org",
+      "chain_id": 56,
+      "host": "https://proxy.opinion.trade:8443"
+    }
+  ]
+}
+```
+
+> 说明：该文件用于 Opinion 侧下单与签名。请确保私钥与 API Key 不被提交到仓库。
+
+## 最小化实盘配置示例
+在 `config.yaml` 中至少配置这些字段（其它保持默认）：
+```yaml
+monitoring_db_url: postgresql://user:pass@127.0.0.1:5432/monitor
+discovery_db_path: ./data/discovery.db
+opinion_api_key: "YOUR_OPINION_API_KEY"
+
+trade:
+  enabled: true
+  dry_run: false
+  opinion_account_file: ./config/accounts.json
+  opinion_account_id: opinion_acc
+  opinion_enable_trading_on_startup: true
+  min_order_notional_usd: 5.0
+  max_open_positions: 20
+  max_global_exposure_frac: 0.3
+  max_per_pair_exposure_frac: 0.1
+```
+
 ## 数据库
 - **PostgreSQL**：核心监控数据（自动建表，schema 位于 `sql/schema_pg.sql`）
 - **SQLite**：队列缓存（`db_queue_path`）
@@ -140,30 +215,10 @@ python3 analysis/alpha_follow_report.py --db "$MONITOR_DB_URL"
 
 ## 日志归档/压缩（示例）
 ### 方案 A：简单脚本（按天切分 + gzip）
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-
-TS=$(date +"%Y-%m-%d")
-SRC_DIR="./records"
-DST_DIR="./records/archive"
-
-mkdir -p "$DST_DIR"
-
-if [ -f "$SRC_DIR/alpha_log.jsonl" ]; then
-  mv "$SRC_DIR/alpha_log.jsonl" "$DST_DIR/alpha_log_${TS}.jsonl"
-  gzip -9 "$DST_DIR/alpha_log_${TS}.jsonl"
-fi
-
-if [ -f "$SRC_DIR/alpha_log.csv" ]; then
-  mv "$SRC_DIR/alpha_log.csv" "$DST_DIR/alpha_log_${TS}.csv"
-  gzip -9 "$DST_DIR/alpha_log_${TS}.csv"
-fi
-```
-
+脚本已落地：`scripts/rotate_alpha_logs.sh`。  
 可以配合 `cron` 每天执行一次：
 ```bash
-0 2 * * * /opt/monitor/rotate_alpha_logs.sh >> /var/log/alpha_log_rotate.log 2>&1
+0 2 * * * /opt/monitor/scripts/rotate_alpha_logs.sh >> /var/log/alpha_log_rotate.log 2>&1
 ```
 
 ### 方案 B：logrotate（自动轮转）
