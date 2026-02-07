@@ -248,6 +248,3 @@ trade:
 - **没有配对数据？** 确认 matcher 已生成 `discovery.db`，且 `discovery_db_path` 配置正确。
 - **不想交易？** 关闭 `trade.enabled` 或开启 `trade.dry_run`。
 
-## 安全提示
-- 不要提交包含密钥的 `config.yaml`。
-- 生产环境请使用只读/最小权限的 API Key。
