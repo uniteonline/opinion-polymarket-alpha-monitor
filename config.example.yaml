@@ -1,0 +1,248 @@
+discovery_config_path: ./discovery/config.yaml
+discovery_db_path: ./data/discovery.db
+monitoring_db_url: postgresql://user:pass@127.0.0.1:5432/monitor
+db_queue_path: ./data/db_queue.sqlite
+alpha_capture_enabled: false
+shard_count: 8
+polymarket_ws_url: wss://ws-subscriptions-clob.polymarket.com/ws/market
+polymarket_rest_base: https://clob.polymarket.com
+polymarket_rest_refresh_interval_sec: 60
+polymarket_rest_stale_threshold_sec: 120
+polymarket_rest_batch_size: 500
+opinion_ws_url: wss://ws.opinion.trade
+opinion_api_key: ""
+opinion_rest_base: https://proxy.opinion.trade:8443/openapi
+opinion_rest_bootstrap_concurrency: 8
+opinion_rest_bootstrap_batch_size: 50
+opinion_rest_bootstrap_batch_delay_ms: 300
+opinion_rest_bootstrap_max_rps: 6
+opinion_rest_max_rps: 12
+opinion_rest_trigger_batch_size: 50
+opinion_rest_trigger_batch_delay_ms: 300
+opinion_rest_trigger_max_rps: 6
+opinion_rest_ws_connect_grace_ms: 3000
+opinion_rest_fast_interval_sec: 120
+opinion_rest_inactive_sec: 60
+opinion_rest_latest_price_interval_sec: 80
+opinion_rest_latest_price_all: false
+opinion_rest_latest_price_ws_stale_sec: 10
+opinion_rest_latest_price_book_stale_sec: 15
+opinion_rest_orderbook_ws_stale_sec: 3
+opinion_rest_orderbook_staleness_ms: 10000
+opinion_rest_active_only: true
+opinion_rest_ws_primary: true
+opinion_rest_stale_cooldown_threshold_ms: 600000
+opinion_rest_stale_cooldown_duration_sec: 900
+opinion_active_window_sec: 600
+opinion_ts_max_skew_ms: 30000
+heartbeat_interval_sec: 30
+snapshot_interval_min: 15
+tick_interval_ms: 1000
+ws_stale_alert_sec: 15
+ws_reconnect_stale_sec: 60
+ws_error_reconnect_window_sec: 60
+ws_error_reconnect_threshold: 3
+pm_staleness_ms: 10000
+other_staleness_ms: 30000
+hard_clear_ms: 120000
+analysis_staleness_ms: 180000
+analysis_gap_allow: 5
+analysis_move_eps: 1e-6
+pair_flush_late_arrival_s: 60
+clock_offset_alpha: 0.1
+clock_offset_max_step_ms: 50
+fee_bps_polymarket: 350
+fee_bps_opinion: 0
+chain_metrics_interval_sec: 10
+chain_metrics_base_fee: 0.0
+chain_metrics_priority_fee: 0.0
+chain_metrics_gas_used_est: 0.0
+trade:
+  enabled: true
+  dry_run: false
+  engine_shards: 8
+  queue_capacity: 8192
+  order_executor_concurrency: 16
+  opinion_account_file: ./config/accounts.json
+  opinion_account_id: opinion_acc
+  opinion_private_base: https://proxy.opinion.trade:8443
+  opinion_prefetch_base: https://proxy.opinion.trade:8443
+  opinion_prefetch_interval_ms: 250
+  opinion_check_approval: true
+  opinion_enable_trading_on_startup: true
+  opinion_enable_retry_ms: 60000
+  opinion_force_eoa_orders: false
+  order_poll_interval_ms: 2000
+  order_client_prefix: monitor
+  ws_user_channels_enabled: true
+  ws_user_channel_stale_ms: 30000
+  post_only: true
+  entry_ttl_ms: 6000
+  alpha_a_entry_ttl_ms: 4000
+  alpha_a_entry_ttl_frac: 0.25
+  alpha_a_entry_ttl_cap_ms: 3000
+  alpha_b_entry_ttl_frac: 0.35
+  alpha_b_entry_ttl_cap_ms: 6000
+  exit_ttl_ms: 15000
+  alpha_source: follow_score_raw
+  alpha_log_enabled: true
+  alpha_log_jsonl_path: ./records/alpha_log.jsonl
+  alpha_log_csv_path: ./records/alpha_log.csv
+  alpha_log_interval_sec: 60
+  alpha_min: 0.0
+  move_min: 0.0
+  mom_min: 0.0
+  edge_min: 0.0
+  book_decay_block: 0.95
+  book_support_block: 0.05
+  book_decay_scale: 0.75
+  book_support_scale: 0.2
+  book_scale_min: 0.2
+  entry_fraction: 1.0
+  entry_fraction_free: 1.0
+  entry_pool_frac: 1.0
+  min_order_notional_usd: 5.0
+  max_open_positions: 60
+  max_global_exposure_frac: 0.6
+  max_per_pair_exposure_frac: 0.25
+  gas_mult: 2.5
+  gas_buffer_usd: 0.2
+  gas_est_usd: 0.0
+  gas_lookback_ms: 60000
+  gas_include_cancel_allowance: true
+  gas_cancel_allowance_factor: 1.5
+  gas_emergency_pause_enabled: true
+  gas_emergency_max_usd: 20.0
+  cancel_check_interval_ms: 100
+  entry_cancel_shock_mom_ratio_min: 0.2
+  entry_cancel_mom_floor: 0.000001
+  entry_cancel_shock_floor: 0.000001
+  entry_cancel_mom_decay_min: 0.0
+  retrace_cancel: 0.4
+  retrace_exit: 0.5
+  cooldown_sec: 10
+  cooldown_after_cancel_ms: 15000
+  cooldown_after_exit_ms: 5000
+  cooldown_after_postonly_reject_ms: 5000
+  per_pair_min_interval_ms: 2000
+  base_alpha: 0.033
+  move_eps: 1e-6
+  tick_px: 0.0001
+  entry_tick_offset: 1
+  entry_spread_max_ticks: 0
+  entry_spread_max_pct: 0.05
+  entry_spread_size_scale: 0.0
+  entry_aggr_enabled: true
+  entry_aggr_shock_max: 1.0
+  entry_aggr_shock_min: 0.3
+  entry_aggr_shock_early_ratio: 0.3
+  entry_aggr_gap: 0.2
+  entry_aggr_default: 0.3
+  exit_tick_offset: 1
+  max_chase_ticks: 3
+  chase_step_ticks: 1
+  inv_k: 0.8
+  target_decay_per_sec: 0.008
+  target_floor_gas_mult: 1.2
+  ofi_entry_min: 0.0
+  ofi_cancel_low: -1000.0
+  ofi_cancel_med: -5000.0
+  trade_cancel_usd: 1000.0
+  ask_add_usd: 1000.0
+  bid_withdraw_usd: 2000.0
+  opi_mid_ret_cancel_bps: 5.0
+  opi_spread_bps_min: 1.0
+  opi_edge_min_bps: 0.0
+  opi_imbalance_cancel: 0.3
+  opi_bid_withdraw_usd: 2000.0
+  opi_ask_add_usd: 2000.0
+  opi_taker_buy_cancel_usd: 2000.0
+  opi_taker_sell_cancel_usd: 2000.0
+  opi_trade_imbalance_cancel: 0.6
+  opi_cancel_staleness_ms: 15000
+  signal_staleness_ms: 10000
+  opi_snapshot_on_demand_min_interval_ms: 5000
+  log_blocked_signals: true
+  log_blocked_interval_ms: 30000
+  max_bar_gap_ratio_1m: 0.80
+  max_opi_staleness_p90_ms: 120000
+  max_poly_latency_p99_ms: 5000
+  max_opi_latency_p99_ms: 120000
+  balance_total_usd: 25.0
+  balance_free_usd: 25.0
+  k_edge: 0.6
+  k_mom: 0.4
+  k_shock: 0.6
+  tp_a1: 1.0
+  tp_a2: 0.5
+  tp_a3: 0.7
+  tp_a4_shock: 1.0
+  alpha_a_enabled: true
+  alpha_a_opi_stale_max_ms: 120000
+  alpha_a_opi_stale_soft_start_ms: 50000
+  alpha_a_opi_stale_soft_tau_ms: 30000
+  alpha_a_opi_stale_soft_min_scale: 0.2
+  alpha_a_use_pair_quantile: true
+  alpha_a_pair_p50_plus_ms: 10000
+  alpha_a_edge_norm_min: 0.0
+  alpha_a_edge_raw_min_abs: 0.0
+  alpha_a_cost_mult: 1.0
+  alpha_a_max_age_s: 120
+  alpha_a_allowed_shock_types:
+    - PRICE_VELOCITY_5S
+    - PRICE_ACCEL_10S
+    - RV_JUMP_5S
+    - SWEEP
+    - OFI_SPIKE_10S
+    - LARGE_TRADE
+  alpha_a_require_noise_zero: true
+  alpha_a_decay_per_sec: 0.015
+  alpha_a_horizon_default_s: 60
+  alpha_a_horizon_by_shock_type:
+    PRICE_VELOCITY_5S: 30
+    PRICE_ACCEL_10S: 60
+    RV_JUMP_5S: 60
+    SWEEP: 30
+    OFI_SPIKE_10S: 30
+    LARGE_TRADE: 30
+  alpha_b_enabled: true
+  alpha_b_opi_stale_max_ms: 15000
+  alpha_b_use_pair_quantile: true
+  alpha_b_pair_p50_plus_ms: 5000
+  alpha_b_move_min: 0.0015
+  alpha_b_mom_min: 0.0006
+  alpha_b_ofi_entry_min: 1000.0
+  alpha_b_edge_norm_min: 0.003
+  alpha_b_cost_mult: 2.0
+  alpha_b_retrace_cancel_ratio: 0.40
+  alpha_b_ofi_flip_cancel_usd: 1000.0
+  alpha_b_decay_per_sec: 0.008
+  alpha_b_horizon_default_s: 60
+  alpha_c_enabled: true
+  alpha_c_use_lag_clamp: true
+  alpha_c_lookback_fixed_s: 30
+  alpha_c_lookback_min_s: 10
+  alpha_c_lookback_max_s: 60
+  alpha_c_min_abs_return: 0.0008
+  alpha_c_align_bonus: 0.20
+  alpha_c_conflict_penalty: 0.30
+  alpha_c_block_b_on_conflict: true
+  rank_top_k_a: 20
+  rank_top_k_b: 30
+  rank_w_edge: 1.0
+  rank_w_driver: 0.8
+  rank_w_stale: 0.6
+  rank_w_cost: 0.4
+  rank_w_bookshape: 0.3
+  rank_ofi_scale: 1000.0
+  strategy_cap_a: 0.25
+  strategy_cap_b: 0.25
+  strategy_cap_c: 0.01
+  per_trade_cap_a: 0.25
+  per_trade_cap_b: 0.25
+  per_trade_cap_c: 0.002
+  follow_min_corr: 0.8
+  follow_min_lag_conf: 0.25
+  follow_min_range: 0.02
+  follow_corr_min_samples: 30
+  follow_corr_min_range: 0.02

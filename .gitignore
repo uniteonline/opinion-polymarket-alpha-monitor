@@ -1,0 +1,23 @@
+# Rust
+/target/
+
+# Local config
+/config.yaml
+
+# Secrets / env
+.env
+.env.*
+
+# Local data
+*.db
+/monitoring_heavy.db
+/data/
+/records/
+
+# Python artifacts (analysis scripts)
+__pycache__/
+*.py[cod]
+
+# OS
+.DS_Store
+Thumbs.db
